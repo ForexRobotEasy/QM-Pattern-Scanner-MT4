@@ -1,0 +1,96 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                              QM Pattern Scanner MT4|
+//|                                Developer: Forex Robot Easy Team   |
+//|                                   Website: forexroboteasy.com     |
+//+------------------------------------------------------------------+
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//|                         GLOBAL VARIABLES                          |
+//|                                                                  |
+//+------------------------------------------------------------------+
+double SymAsk[], SymBid[];
+datetime SymTime[];
+string SymNames[];
+int SymTotal;
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//|                        FUNCTION DECLARATIONS                      |
+//|                                                                  |
+//+------------------------------------------------------------------+
+void ScanMarket();
+void GetSymbolData(int index);
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//|                            INITIALIZATION                          |
+//|                                                                  |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+   // Scan the market and get symbol data
+   ScanMarket();
+   
+   return(INIT_SUCCEEDED);
+}
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//|                           TICK FUNCTION                           |
+//|                                                                  |
+//+------------------------------------------------------------------+
+void OnTick()
+{
+   // Update market data every tick
+   ScanMarket();
+   
+   // Your trading logic here
+   // ...
+}
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//|                          SCANNER FUNCTION                          |
+//|                                                                  |
+//+------------------------------------------------------------------+
+void ScanMarket()
+{
+   // Get total number of symbols
+   SymTotal = SymbolsTotal();
+   
+   // Initialize arrays
+   ArrayResize(SymAsk, SymTotal);
+   ArrayResize(SymBid, SymTotal);
+   ArrayResize(SymTime, SymTotal);
+   ArrayResize(SymNames, SymTotal);
+   
+   // Loop through all symbols
+   for(int i = 0; i < SymTotal; i++)
+   {
+      // Get symbol data
+      GetSymbolData(i);
+      
+      // Add your custom code to analyze the market data
+      // ...
+   }
+}
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//|                     GET SYMBOL DATA FUNCTION                      |
+//|                                                                  |
+//+------------------------------------------------------------------+
+void GetSymbolData(int index)
+{
+   // Get symbol name
+   SymNames[index] = SymbolName(index, true);
+   
+   // Get symbol ask and bid prices
+   SymAsk[index] = SymbolInfoDouble(SymNames[index], SYMBOL_ASK);
+   SymBid[index] = SymbolInfoDouble(SymNames[index], SYMBOL_BID);
+   
+   // Get symbol time
+   SymTime[index] = TimeCurrent();
+}
